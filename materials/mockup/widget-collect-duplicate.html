@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>1.5 Duplicate Conflict — Mockup</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="page-title">
+    <h1>1.5 · Duplicate Word Conflict</h1>
+    <p>Shown inside the widget when the submitted word already exists in the same collection. Dismissing without a choice defaults to "Keep old, discard new".</p>
+  </div>
+  <div class="frame-grid">
+    <div class="frame">
+      <div class="frame-label">Desktop — conflict popup</div>
+      <div class="desktop">
+        <div class="conflict-card">
+          <div class="warn-title"><span class="dot">!</span> "ubiquitous" already exists</div>
+          <div class="existing">
+            Currently in <b>IELTS Vocabulary</b><br />
+            Collected on <b>Aug 14, 2026</b>
+          </div>
+          <div class="conflict-actions">
+            <button class="btn btn-outline">Keep old</button>
+            <button class="btn btn-primary">Replace</button>
+            <button class="btn btn-danger">Delete</button>
+          </div>
+          <div class="conflict-hint">No choice? Closing this keeps the old entry and discards the new one.</div>
+        </div>
+        <div class="mini-ani-widget pos-br">
+          <img src="../asset/floating_widget/mini_ani_active_web.png" alt="mini-ani active" />
+        </div>
+        <div class="taskbar">
+          <div class="start"></div>
+          <div class="app-icon"></div>
+          <div class="app-icon"></div>
+          <div class="tray">🔊 📶 🔋  10:26 AM</div>
+        </div>
+      </div>
+      <div class="frame-note">"Replace" overwrites Meaning/Example/Date on the existing row with the new lookup results. "Delete" removes the old row (see open question #8 in requirements — whether the new submission is inserted afterward needs confirming).</div>
+    </div>
+  </div>
+</body>
+</html>

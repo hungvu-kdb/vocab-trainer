@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Practice</title>
+<!--
+  Derived from mockup/practice-setup.html, practice-drill.html,
+  practice-drill-wrong.html and practice-summary.html. The mockups' fake window
+  chrome is dropped because the real Qt window provides it; the three screens live
+  in one document and are swapped, since they are steps in one flow.
+
+  Design tokens are injected at load time from the shared theme so this page and the
+  Qt widget layer cannot drift apart.
+-->
+<style id="theme-tokens"></style>
+<link rel="stylesheet" href="app.css" />
+</head>
+<body>
+
+<!-- ============================ SETUP ============================ -->
+<section id="screen-setup">
+  <div class="pw-header">
+    <div class="brand"><span class="logo"></span> Practice</div>
+  </div>
+  <div class="pw-body">
+    <h3>Choose collections</h3>
+    <p class="sub">Select one or many. Word pool combines all selected collections.</p>
+
+    <div id="setup-banner" class="banner hidden"></div>
+
+    <div class="search-row">
+      <div class="search-wrap">
+        <span class="glyph">&#128269;</span>
+        <input type="text" id="collection-search" class="text-input"
+               placeholder="Search collections by name&hellip;" />
+      </div>
+      <select id="collection-sort" class="select-input" style="width:170px;">
+        <option value="newest_first">Newest first</option>
+        <option value="oldest_first">Oldest first</option>
+        <option value="name_asc">Name (A&ndash;Z)</option>
+      </select>
+    </div>
+
+    <div class="collection-list" id="collection-list"></div>
+    <div id="no-results" class="empty-note hidden">No collections match your search.</div>
+
+    <div class="setup-row">
+      <div>
+        <div class="label">Required correct writes</div>
+        <div class="desc">How many times a word must be typed correctly to be
+          &ldquo;mastered&rdquo; this session.</div>
+      </div>
+      <div class="stepper">
+        <button type="button" id="writes-down">&ndash;</button>
+        <span class="val" id="writes-value">3</span>
+        <button type="button" id="writes-up">+</button>
+      </div>
+    </div>
+
+    <div class="pool-line" id="pool-line">Pool size: <b>0 words</b> from 0 collections</div>
+    <div class="blocked-note hidden" id="blocked-note">
+      Select at least one collection that contains words to start practising.
+    </div>
+
+    <button class="btn btn-primary" id="start-button" style="width:200px;" disabled>
+      Start practice &rarr;
+    </button>
+  </div>
+</section>
+
+<!-- ============================ DRILL ============================ -->
+<section id="screen-drill" class="hidden">
+  <div class="drill-topbar">
+    <div class="counter" id="drill-counter">Attempt 0 of 0</div>
+    <div class="score-pill">
+      <div class="metric">Score <b id="drill-score">0</b></div>
+      <div class="metric penalty">Penalties <b id="drill-penalties">0</b></div>
+    </div>
+  </div>
+  <div class="progress-track"><div class="progress-fill" id="drill-progress" style="width:0%"></div></div>
+
+  <div class="drill-stage">
+    <span class="type-badge" id="drill-type">noun</span>
+    <div class="meaning" id="drill-meaning"></div>
+    <div class="hint" id="drill-hint">Type the word</div>
+
+    <div id="drill-feedback" class="feedback hidden"></div>
+    <div>
+      <input type="text" id="answer-input" class="answer-input"
+             autocomplete="off" autocapitalize="off" spellcheck="false" />
+    </div>
+
+    <div class="mastery-row" id="mastery-row"></div>
+    <div class="mastery-note" id="mastery-note"></div>
+
+    <div class="drill-actions">
+      <button class="btn btn-primary hidden" id="next-button">Next word &rarr;</button>
+      <button class="btn btn-outline" id="end-button">End session</button>
+    </div>
+  </div>
+</section>
+
+<!-- =========================== SUMMARY =========================== -->
+<section id="screen-summary" class="hidden">
+  <div class="pw-header">
+    <div class="brand"><span class="logo"></span> Practice</div>
+  </div>
+  <div class="summary-hero">
+    <div class="big-score" id="summary-score">+0</div>
+    <div class="label" id="summary-label">Final score</div>
+  </div>
+  <div class="summary-stats">
+    <div class="summary-stat">
+      <div class="num" id="summary-words">0</div>
+      <div class="lbl">words practiced</div>
+    </div>
+    <div class="summary-stat">
+      <div class="num" id="summary-penalties">0</div>
+      <div class="lbl">total penalties</div>
+    </div>
+    <div class="summary-stat">
+      <div class="num" id="summary-elapsed">0s</div>
+      <div class="lbl">time taken</div>
+    </div>
+  </div>
+  <div id="summary-banner" class="banner hidden" style="margin:0 24px 12px;"></div>
+  <div class="summary-actions">
+    <button class="btn btn-outline" id="back-to-setup">Back to setup</button>
+    <button class="btn btn-primary" id="practice-again">Practice again</button>
+  </div>
+</section>
+
+<!-- Collection preview: read-only look at a collection's words before picking it (FR-5.10) -->
+<div id="preview-backdrop" class="modal-backdrop hidden">
+  <div class="modal-card modal-card-wide">
+    <div class="title" id="preview-title"></div>
+    <div id="preview-banner" class="banner hidden"></div>
+    <div class="preview-table-wrap">
+      <table class="preview-table" id="preview-table">
+        <thead>
+          <tr>
+            <th>Word</th>
+            <th>Type</th>
+            <th>Meaning</th>
+            <th>Example</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody id="preview-table-body"></tbody>
+      </table>
+      <div id="preview-empty" class="empty-note hidden">This collection has no words yet.</div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="preview-close">Close</button>
+    </div>
+  </div>
+</div>
+
+<script src="qwebchannel.js"></script>
+<script src="bridge-client.js"></script>
+<script src="practice.js"></script>
+</body>
+</html>

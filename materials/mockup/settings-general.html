@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>3.1 General Settings — Mockup</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="page-title">
+    <h1>3.1 · Native Settings Window — General</h1>
+    <p>Reached via the widget menu or system tray icon. Handles master file location, widget on/off + appearance, and TTS options.</p>
+  </div>
+  <div class="frame-grid" style="grid-template-columns: 1fr;">
+    <div class="frame">
+      <div class="frame-label">Native window</div>
+      <div class="native-window">
+        <div class="native-titlebar">
+          <span>Vocabulary Trainer — Settings</span>
+          <span class="win-controls">─ ▢ ✕</span>
+        </div>
+        <div class="native-body">
+          <div class="native-nav">
+            <div class="nav-item active">General</div>
+            <div class="nav-item">Collections</div>
+            <div class="nav-item">Widget</div>
+            <div class="nav-item">Audio</div>
+            <div class="nav-item">About</div>
+          </div>
+          <div class="native-content">
+            <h3>Master file</h3>
+            <p class="sub">Excel workbook where all collected words are stored.</p>
+            <div class="path-field">
+              <input class="text-input" value="C:\Users\Anh\AppData\Roaming\VocabTrainer\master.xlsx" readonly />
+              <button class="btn btn-ghost">Browse…</button>
+            </div>
+
+            <h3>Floating widget</h3>
+            <p class="sub">Always-on-top mini-ani that lives on your desktop.</p>
+            <div class="settings-row">
+              <div>
+                <div class="label">Show widget</div>
+                <div class="desc">Turn the floating widget on or off entirely</div>
+              </div>
+              <label class="switch"><input type="checkbox" checked /><span class="track"></span></label>
+            </div>
+            <div class="settings-row">
+              <div>
+                <div class="label">Character</div>
+                <div class="desc">Choose the mini-ani animation</div>
+              </div>
+              <select class="select-input" style="width:140px; margin:0;">
+                <option>Cat</option>
+                <option>Crocodile</option>
+              </select>
+            </div>
+
+            <h3 style="margin-top:18px;">Text-to-speech</h3>
+            <div class="settings-row">
+              <div>
+                <div class="label">Voice</div>
+                <div class="desc">Used to read words aloud on correct answers</div>
+              </div>
+              <select class="select-input" style="width:180px; margin:0;">
+                <option>System default (en-US)</option>
+                <option>System default (en-GB)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="frame-note">Practice has no settings here since it's delegated entirely to the local website — its options (mastery threshold, collections) live on the Practice setup page itself (see 2.1).</div>
+    </div>
+  </div>
+</body>
+</html>

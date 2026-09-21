@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>1.2 Widget Menu — Mockup</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="page-title">
+    <h1>1.2 · Click mini-ani → Mode Menu</h1>
+    <p>Clicking the widget opens an explicit popup to choose Collect or Practice. Practice opens the native Practice window.</p>
+  </div>
+  <div class="frame-grid">
+    <div class="frame">
+      <div class="frame-label">Desktop — menu open</div>
+      <div class="desktop">
+        <div class="widget-menu">
+          <button><span class="icon-dot collect">✚</span> Collect new word</button>
+          <button><span class="icon-dot practice">▶</span> Practice</button>
+          <hr />
+          <button><span class="icon-dot settings">⚙</span> Settings</button>
+          <div class="toggle-row">
+            Widget on
+            <label class="switch"><input type="checkbox" checked /><span class="track"></span></label>
+          </div>
+          <hr />
+          <button><span class="icon-dot" style="background:var(--danger-soft); color:var(--danger);">✕</span> Quit</button>
+        </div>
+        <div class="mini-ani-widget pos-br">
+          <img src="../asset/floating_widget/mini_ani_active_web.png" alt="mini-ani active" />
+        </div>
+        <div class="taskbar">
+          <div class="start"></div>
+          <div class="app-icon"></div>
+          <div class="app-icon"></div>
+          <div class="tray">🔊 📶 🔋  10:24 AM</div>
+        </div>
+      </div>
+      <div class="frame-note">Animation switches to "active" pose while the menu is open. Selecting "Practice" opens the native Practice window (see Section 2) — no browser or local server involved. A quick widget on/off toggle is included here for convenience, mirroring the same control in Settings. "Quit" ends the application immediately from the widget — the same action already available from the tray icon's menu, added here so quitting never requires hunting for the notification area.</div>
+    </div>
+  </div>
+</body>
+</html>

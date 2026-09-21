@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>2.1 Practice Setup — Mockup</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="page-title">
+    <h1>2.1 · Practice — Session Setup (native window)</h1>
+    <p>Opened as a native app window when "Practice" is chosen from the widget menu. Collection multi-select + mastery threshold.</p>
+  </div>
+  <div class="frame-grid" style="grid-template-columns: 1fr;">
+    <div class="frame">
+      <div class="frame-label">Native window</div>
+      <div class="native-window">
+        <div class="native-titlebar">
+          <span>Vocabulary Trainer — Practice</span>
+          <span class="win-controls">─ ▢ ✕</span>
+        </div>
+        <div class="browser-body">
+          <div class="pw-header">
+            <div class="brand"><span class="logo"></span> Practice</div>
+          </div>
+          <div class="pw-body">
+            <h3 style="margin:0 0 4px; font-size:15px;">Choose collections</h3>
+            <p style="margin:0 0 12px; font-size:12.5px; color:var(--ink-soft);">Select one or many. Word pool combines all selected collections.</p>
+
+            <div style="display:flex; gap:8px; margin-bottom:10px;">
+              <div style="flex:1; position:relative;">
+                <input
+                  type="text"
+                  id="collection-search"
+                  class="text-input"
+                  style="margin-bottom:0; padding-left:32px;"
+                  placeholder="Search collections by name…"
+                  oninput="filterCollections()"
+                />
+                <span style="position:absolute; left:10px; top:50%; transform:translateY(-50%); color:var(--ink-faint); font-size:13px;">🔍</span>
+              </div>
+              <select id="collection-sort" class="select-input" style="width:170px; margin-bottom:0;" onchange="sortCollections()">
+                <option value="date-desc">Newest first</option>
+                <option value="date-asc">Oldest first</option>
+                <option value="name-asc">Name (A–Z)</option>
+              </select>
+            </div>
+
+            <div class="collection-list" id="collection-list">
+              <div class="collection-item selected" data-name="IELTS Vocabulary" data-created="2026-08-14">
+                <label><input type="checkbox" checked /> IELTS Vocabulary</label>
+                <span class="count">128 words · created Aug 14, 2026</span>
+              </div>
+              <div class="collection-item selected" data-name="Daily Reading" data-created="2026-05-02">
+                <label><input type="checkbox" checked /> Daily Reading</label>
+                <span class="count">42 words · created May 2, 2026</span>
+              </div>
+              <div class="collection-item" data-name="Business English" data-created="2026-07-20">
+                <label><input type="checkbox" /> Business English</label>
+                <span class="count">17 words · created Jul 20, 2026</span>
+              </div>
+              <div class="collection-item" data-name="General" data-created="2026-01-10">
+                <label><input type="checkbox" /> General</label>
+                <span class="count">6 words · created Jan 10, 2026</span>
+              </div>
+            </div>
+            <div id="no-results" style="display:none; font-size:12.5px; color:var(--ink-faint); padding:10px 0;">
+              No collections match your search.
+            </div>
+
+            <div class="setup-row">
+              <div>
+                <div class="label">Required correct writes</div>
+                <div class="desc">How many times a word must be typed correctly to be "mastered" this session.</div>
+              </div>
+              <div class="stepper">
+                <button>–</button>
+                <span class="val">3</span>
+                <button>+</button>
+              </div>
+            </div>
+
+            <div style="font-size:12.5px; color:var(--ink-soft); margin-bottom:14px;">
+              Pool size: <b style="color:var(--ink)">170 words</b> from 2 collections
+            </div>
+
+            <button class="btn btn-primary" style="width:200px;">Start practice →</button>
+          </div>
+        </div>
+      </div>
+      <div class="frame-note">If the selected collection(s) resolve to zero words, the Start button is disabled and a message explains why (requirements §4.1 step 4). This window reads directly from the app's own data layer — no local server or browser involved. Search filters by collection name (case-insensitive substring match); sort reorders by creation date (newest/oldest) or name, independent of the search filter and of which collections are checked.</div>
+    </div>
+  </div>
+
+  <script>
+    function filterCollections() {
+      const query = document.getElementById('collection-search').value.trim().toLowerCase();
+      const items = document.querySelectorAll('#collection-list .collection-item');
+      let visibleCount = 0;
+      items.forEach(item => {
+        const name = item.dataset.name.toLowerCase();
+        const matches = name.includes(query);
+        item.style.display = matches ? '' : 'none';
+        if (matches) visibleCount++;
+      });
+      document.getElementById('no-results').style.display = visibleCount === 0 ? 'block' : 'none';
+    }
+
+    function sortCollections() {
+      const mode = document.getElementById('collection-sort').value;
+      const list = document.getElementById('collection-list');
+      const items = Array.from(list.querySelectorAll('.collection-item'));
+
+      items.sort((a, b) => {
+        if (mode === 'name-asc') {
+          return a.dataset.name.localeCompare(b.dataset.name);
+        }
+        const dateA = new Date(a.dataset.created);
+        const dateB = new Date(b.dataset.created);
+        return mode === 'date-asc' ? dateA - dateB : dateB - dateA;
+      });
+
+      items.forEach(item => list.appendChild(item));
+    }
+  </script>
+</body>
+</html>

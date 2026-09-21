@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>3.2 Collections CRUD — Mockup</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="page-title">
+    <h1>3.2 · Native Settings Window — Collections</h1>
+    <p>Full CRUD for the Collection entity. Deleting a collection cascades to delete all its words — confirmation required.</p>
+  </div>
+  <div class="frame-grid" style="grid-template-columns: 1fr;">
+    <div class="frame">
+      <div class="frame-label">Native window — delete confirmation open</div>
+      <div class="native-window">
+        <div class="native-titlebar">
+          <span>Vocabulary Trainer — Settings</span>
+          <span class="win-controls">─ ▢ ✕</span>
+        </div>
+        <div class="native-body" style="position:relative;">
+          <div class="native-nav">
+            <div class="nav-item">General</div>
+            <div class="nav-item active">Collections</div>
+            <div class="nav-item">Widget</div>
+            <div class="nav-item">Audio</div>
+            <div class="nav-item">About</div>
+          </div>
+          <div class="native-content">
+            <h3>Collections</h3>
+            <p class="sub">Manage the collections used to group words in the master file.</p>
+
+            <div class="collection-manage-row">
+              <div>
+                IELTS Vocabulary
+                <div class="meta">128 words</div>
+              </div>
+              <div class="actions">
+                <button title="Preview words">👁</button>
+                <button title="Rename">✎</button>
+                <button title="Delete">🗑</button>
+              </div>
+            </div>
+            <div class="collection-manage-row">
+              <div>
+                Daily Reading
+                <div class="meta">42 words</div>
+              </div>
+              <div class="actions">
+                <button title="Preview words">👁</button>
+                <button title="Rename">✎</button>
+                <button title="Delete">🗑</button>
+              </div>
+            </div>
+            <div class="collection-manage-row">
+              <div>
+                Business English
+                <div class="meta">17 words</div>
+              </div>
+              <div class="actions">
+                <button title="Preview words">👁</button>
+                <button title="Rename">✎</button>
+                <button title="Delete">🗑</button>
+              </div>
+            </div>
+
+            <button class="btn btn-outline" style="margin-top:8px;">+ New collection</button>
+          </div>
+
+          <!-- Confirmation dialog overlay -->
+          <div style="position:absolute; inset:0; background:rgba(20,26,46,0.35); display:flex; align-items:center; justify-content:center;">
+            <div style="background:var(--surface); border-radius: var(--radius-md); padding:20px; width:300px; box-shadow: var(--shadow-widget);">
+              <div style="font-weight:700; font-size:14px; margin-bottom:8px;">Delete "Business English"?</div>
+              <div style="font-size:12.5px; color:var(--ink-soft); margin-bottom:16px; line-height:1.5;">
+                This will permanently delete <b>17 words</b> in the master file that belong to this collection. This cannot be undone.
+              </div>
+              <div style="display:flex; gap:8px;">
+                <button class="btn btn-ghost" style="flex:1;">Cancel</button>
+                <button class="btn btn-danger" style="flex:1;">Delete 17 words</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="frame-note">Renaming a collection updates the "Name of collection" value on all its existing rows in the master file to keep referential consistency (requirements §2.2). The eye icon opens a read-only preview of every word in that collection (see the frame below) — nothing here is editable; the workbook is still edited in Excel.</div>
+    </div>
+    <div class="frame">
+      <div class="frame-label">Native window — collection preview open</div>
+      <div class="native-window">
+        <div class="native-titlebar">
+          <span>Vocabulary Trainer — Settings</span>
+          <span class="win-controls">─ ▢ ✕</span>
+        </div>
+        <div class="native-body" style="position:relative;">
+          <div class="native-nav">
+            <div class="nav-item">General</div>
+            <div class="nav-item active">Collections</div>
+            <div class="nav-item">Widget</div>
+            <div class="nav-item">Audio</div>
+            <div class="nav-item">About</div>
+          </div>
+          <div class="native-content">
+            <h3>Collections</h3>
+            <p class="sub">Manage the collections used to group words in the master file.</p>
+            <div class="collection-manage-row">
+              <div>
+                IELTS Vocabulary
+                <div class="meta">128 words</div>
+              </div>
+              <div class="actions">
+                <button title="Preview words">👁</button>
+                <button title="Rename">✎</button>
+                <button title="Delete">🗑</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Preview modal overlay -->
+          <div style="position:absolute; inset:0; background:rgba(20,26,46,0.35); display:flex; align-items:center; justify-content:center;">
+            <div style="background:var(--surface); border-radius: var(--radius-md); padding:20px; width:520px; max-width:calc(100% - 32px); box-shadow: var(--shadow-widget);">
+              <div style="font-weight:700; font-size:14px; margin-bottom:8px;">IELTS Vocabulary</div>
+              <div style="max-height:220px; overflow-y:auto; margin-bottom:16px;">
+                <table style="width:100%; border-collapse:collapse; font-size:12.5px;">
+                  <thead>
+                    <tr>
+                      <th style="text-align:left; font-size:11px; text-transform:uppercase; color:var(--ink-faint); padding:6px 8px; border-bottom:1px solid var(--border);">Word</th>
+                      <th style="text-align:left; font-size:11px; text-transform:uppercase; color:var(--ink-faint); padding:6px 8px; border-bottom:1px solid var(--border);">Type</th>
+                      <th style="text-align:left; font-size:11px; text-transform:uppercase; color:var(--ink-faint); padding:6px 8px; border-bottom:1px solid var(--border);">Meaning</th>
+                      <th style="text-align:left; font-size:11px; text-transform:uppercase; color:var(--ink-faint); padding:6px 8px; border-bottom:1px solid var(--border);">Example</th>
+                      <th style="text-align:left; font-size:11px; text-transform:uppercase; color:var(--ink-faint); padding:6px 8px; border-bottom:1px solid var(--border);">Date</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td style="padding:7px 8px; border-bottom:1px solid var(--border);">ubiquitous</td>
+                      <td style="padding:7px 8px; border-bottom:1px solid var(--border);">adjective</td>
+                      <td style="padding:7px 8px; border-bottom:1px solid var(--border);">present, appearing, or found everywhere</td>
+                      <td style="padding:7px 8px; border-bottom:1px solid var(--border);">Mobile phones are ubiquitous in modern life.</td>
+                      <td style="padding:7px 8px; border-bottom:1px solid var(--border);">Sep 10, 2026</td>
+                    </tr>
+                    <tr>
+                      <td style="padding:7px 8px; border-bottom:1px solid var(--border);">give up</td>
+                      <td style="padding:7px 8px; border-bottom:1px solid var(--border);">phrase</td>
+                      <td style="padding:7px 8px; border-bottom:1px solid var(--border); color:var(--ink-faint);">—</td>
+                      <td style="padding:7px 8px; border-bottom:1px solid var(--border); color:var(--ink-faint);">—</td>
+                      <td style="padding:7px 8px; border-bottom:1px solid var(--border);">Sep 9, 2026</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div style="display:flex; gap:8px;">
+                <button class="btn btn-ghost" style="flex:1;">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="frame-note">Read-only: the preview shows exactly what is in the master file for that collection, including rows with a blank Meaning/Example (shown as "—") when the lookup pipeline found nothing or the word was saved with a manually-typed meaning left blank.</div>
+    </div>
+  </div>
+</body>
+</html>

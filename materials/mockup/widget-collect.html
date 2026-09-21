@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>1.3 Collect Form — Mockup</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="page-title">
+    <h1>1.3 · Collect Form (background lookup in progress)</h1>
+    <p>Minimal input: word/phrase, part-of-speech chips, collection picker. Submitting kicks off a non-blocking dictionary lookup — or, in Manual mode, waits for the user's own meaning instead.</p>
+  </div>
+  <div class="frame-grid">
+    <div class="frame">
+      <div class="frame-label">Desktop — collect card open, Auto-lookup pending</div>
+      <div class="desktop">
+        <div class="collect-card">
+          <div class="title-row">
+            <span>Collect a word</span>
+            <span class="close-x">✕</span>
+          </div>
+          <label class="field-label">Word or phrase</label>
+          <input class="text-input" value="ubiquitous" readonly />
+          <label class="field-label">Type</label>
+          <div class="chip-row">
+            <span class="chip">noun</span>
+            <span class="chip active">adjective</span>
+            <span class="chip">verb</span>
+            <span class="chip">adverb</span>
+            <span class="chip">phrase</span>
+          </div>
+          <label class="field-label">Collection</label>
+          <select class="select-input" id="collection-select" onchange="handleCollectionChange(this)">
+            <option>IELTS Vocabulary</option>
+            <option>Daily Reading</option>
+            <option>General</option>
+            <option value="__new__">+ New collection…</option>
+          </select>
+
+          <div class="new-collection-row" id="new-collection-row" style="display:none;">
+            <input class="text-input" id="new-collection-input" placeholder="Collection name" style="margin-bottom:8px;" />
+            <div style="display:flex; gap:6px; margin-bottom:10px;">
+              <button class="btn btn-primary" style="flex:1;" onclick="createCollection()">Create</button>
+              <button class="btn btn-ghost" style="flex:1;" onclick="cancelNewCollection()">Cancel</button>
+            </div>
+          </div>
+
+          <label class="field-label">Meaning</label>
+          <div class="chip-row">
+            <span class="chip active">Auto-lookup</span>
+            <span class="chip">Type it myself</span>
+          </div>
+
+          <button class="btn btn-primary" id="save-btn">Save word</button>
+          <div class="status-line">
+            <span class="spinner"></span>
+            Looking up "ubiquitous"…
+          </div>
+        </div>
+        <div class="mini-ani-widget pos-br">
+          <img src="../asset/floating_widget/mini_ani_active_web.png" alt="mini-ani active" />
+        </div>
+        <div class="taskbar">
+          <div class="start"></div>
+          <div class="app-icon"></div>
+          <div class="app-icon"></div>
+          <div class="tray">🔊 📶 🔋  10:25 AM</div>
+        </div>
+      </div>
+      <div class="frame-note">The widget stays interactive during lookup — this is a background/async operation. "Save word" is enabled immediately; if the user saves before lookup finishes, it's stored with Type only and flagged for later enrichment (per requirements §3.2 step 4). Picking "+ New collection…" swaps the dropdown for an inline name field so the user never has to leave the widget to create one (mirrors the Collections CRUD entity in requirements §2.2 — the new collection is created immediately, ready to select on future Collect actions too).</div>
+    </div>
+    <div class="frame">
+      <div class="frame-label">Desktop — collect card open, Manual meaning selected</div>
+      <div class="desktop">
+        <div class="collect-card">
+          <div class="title-row">
+            <span>Collect a word</span>
+            <span class="close-x">✕</span>
+          </div>
+          <label class="field-label">Word or phrase</label>
+          <input class="text-input" value="ubiquitous" readonly />
+          <label class="field-label">Type</label>
+          <div class="chip-row">
+            <span class="chip">noun</span>
+            <span class="chip active">adjective</span>
+            <span class="chip">verb</span>
+            <span class="chip">adverb</span>
+            <span class="chip">phrase</span>
+          </div>
+          <label class="field-label">Collection</label>
+          <select class="select-input">
+            <option>IELTS Vocabulary</option>
+            <option>Daily Reading</option>
+            <option>General</option>
+            <option value="__new__">+ New collection…</option>
+          </select>
+
+          <label class="field-label">Meaning</label>
+          <div class="chip-row">
+            <span class="chip">Auto-lookup</span>
+            <span class="chip active">Type it myself</span>
+          </div>
+
+          <label class="field-label">Your meaning</label>
+          <input class="text-input" placeholder="What does it mean? (optional)" />
+          <label class="field-label">Your example (optional)</label>
+          <input class="text-input" placeholder="An example sentence" />
+
+          <button class="btn btn-primary" id="save-btn-manual">Save word</button>
+          <div class="status-line"></div>
+        </div>
+        <div class="mini-ani-widget pos-br">
+          <img src="../asset/floating_widget/mini_ani_active_web.png" alt="mini-ani active" />
+        </div>
+        <div class="taskbar">
+          <div class="start"></div>
+          <div class="app-icon"></div>
+          <div class="app-icon"></div>
+          <div class="tray">🔊 📶 🔋  10:25 AM</div>
+        </div>
+      </div>
+      <div class="frame-note">Switching to "Type it myself" cancels any in-flight lookup and replaces the read-only result panel with editable Meaning and Example fields. Both are optional — leaving Meaning blank saves the word with Type only, same as an unresolved Auto-lookup. Save never waits on a dictionary in this mode, and a lookup response can never overwrite what the user typed.</div>
+    </div>
+  </div>
+
+  <script>
+    const select = document.getElementById('collection-select');
+    const newRow = document.getElementById('new-collection-row');
+    const newInput = document.getElementById('new-collection-input');
+    const saveBtn = document.getElementById('save-btn');
+
+    function handleCollectionChange(el) {
+      if (el.value === '__new__') {
+        newRow.style.display = 'block';
+        select.style.display = 'none';
+        saveBtn.style.display = 'none';
+        newInput.focus();
+      }
+    }
+
+    function createCollection() {
+      const name = newInput.value.trim();
+      if (!name) {
+        newInput.focus();
+        return;
+      }
+      // Insert the new collection before the "+ New collection…" option and select it.
+      const newOption = document.createElement('option');
+      newOption.textContent = name;
+      newOption.selected = true;
+      select.insertBefore(newOption, select.lastElementChild);
+
+      cancelNewCollection();
+    }
+
+    function cancelNewCollection() {
+      if (select.value === '__new__') {
+        select.value = select.options[0].value;
+      }
+      newInput.value = '';
+      newRow.style.display = 'none';
+      select.style.display = 'block';
+      saveBtn.style.display = 'block';
+    }
+  </script>
+</body>
+</html>

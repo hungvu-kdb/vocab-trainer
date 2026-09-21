@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# Test / coverage artifacts
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Editor / OS
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Kiro scratch/session state (steering and tasks are useful history; keep those)
+# nothing excluded here currently
+
+# Large generated installer binary (rebuild via install_tool/build_exe.py)
+install_tool/Install-VocabularyTrainer.exe

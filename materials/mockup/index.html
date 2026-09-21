@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Vocabulary Trainer — Mockup Index</title>
+<link rel="stylesheet" href="styles.css" />
+<style>
+  .index-grid {
+    max-width: 1180px; margin: 0 auto 60px; padding: 0 24px;
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px;
+  }
+  .index-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg);
+    padding: 18px; text-decoration: none; color: var(--ink); display: block;
+    box-shadow: var(--shadow-card);
+  }
+  .index-card:hover { border-color: var(--brand); }
+  .index-card .num {
+    font-size: 11px; font-weight: 700; color: var(--brand); letter-spacing: 0.05em;
+  }
+  .index-card h3 { margin: 6px 0 6px; font-size: 15px; }
+  .index-card p { margin: 0; font-size: 12.5px; color: var(--ink-soft); line-height: 1.5; }
+  .group-title {
+    max-width: 1180px; margin: 30px auto 4px; padding: 0 24px; font-size: 13px;
+    font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--ink-faint);
+  }
+</style>
+</head>
+<body>
+  <div class="page-title">
+    <h1>Vocabulary Trainer — UI Mockups</h1>
+    <p>Static HTML/CSS mockups, one flow per file. Open any card to view full-size. Built from the clarified requirements in <code>requirements_comprehensive.md</code>.</p>
+  </div>
+
+  <div class="group-title">1 · Learn — Floating Widget (Collect)</div>
+  <div class="index-grid">
+    <a class="index-card" href="widget-idle.html">
+      <div class="num">1.1</div>
+      <h3>Widget on Desktop (idle)</h3>
+      <p>Mini-ani resting on the desktop, always-on-top, draggable.</p>
+    </a>
+    <a class="index-card" href="widget-menu.html">
+      <div class="num">1.2</div>
+      <h3>Click → Mode Menu</h3>
+      <p>Clicking mini-ani opens a popup to choose Collect or Practice (opens the native Practice window).</p>
+    </a>
+    <a class="index-card" href="widget-collect.html">
+      <div class="num">1.3</div>
+      <h3>Collect Form</h3>
+      <p>Word + type input, collection picker, background lookup status.</p>
+    </a>
+    <a class="index-card" href="widget-collect-filled.html">
+      <div class="num">1.4</div>
+      <h3>Collect — Lookup Resolved</h3>
+      <p>Meaning/example auto-filled from Cambridge Dictionary, ready to save.</p>
+    </a>
+    <a class="index-card" href="widget-collect-duplicate.html">
+      <div class="num">1.5</div>
+      <h3>Duplicate Conflict</h3>
+      <p>Keep / Replace / Delete prompt when the word already exists.</p>
+    </a>
+  </div>
+
+  <div class="group-title">2 · Practice — Native Window</div>
+  <div class="index-grid">
+    <a class="index-card" href="practice-setup.html">
+      <div class="num">2.1</div>
+      <h3>Session Setup</h3>
+      <p>Collection multi-select + required-correct-writes stepper, opened as a native app window.</p>
+    </a>
+    <a class="index-card" href="practice-drill.html">
+      <div class="num">2.2</div>
+      <h3>Drill — Correct Answer</h3>
+      <p>Type-the-word prompt, live score, mastery progress dots, correct feedback.</p>
+    </a>
+    <a class="index-card" href="practice-drill-wrong.html">
+      <div class="num">2.3</div>
+      <h3>Drill — Wrong Answer</h3>
+      <p>Penalty applied, live score drops, correct spelling revealed.</p>
+    </a>
+    <a class="index-card" href="practice-summary.html">
+      <div class="num">2.4</div>
+      <h3>Session Summary</h3>
+      <p>Final score, accuracy, penalties and time, shown at session end.</p>
+    </a>
+  </div>
+
+  <div class="group-title">3 · Settings & Main Window (Native)</div>
+  <div class="index-grid">
+    <a class="index-card" href="settings-general.html">
+      <div class="num">3.1</div>
+      <h3>General Settings</h3>
+      <p>Master file path, widget on/off + animation choice, TTS options.</p>
+    </a>
+    <a class="index-card" href="settings-collections.html">
+      <div class="num">3.2</div>
+      <h3>Collections CRUD</h3>
+      <p>Create, rename, delete collections; delete confirmation with word count.</p>
+    </a>
+  </div>
+</body>
+</html>

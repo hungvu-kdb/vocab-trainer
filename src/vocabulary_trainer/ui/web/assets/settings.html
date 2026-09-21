@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Settings</title>
+<!--
+  Derived from mockup/settings-general.html and settings-collections.html.
+
+  The mockups draw five nav items but only design two panes; all five ship here
+  (General, Collections, Widget, Audio, About). That moves the widget toggle and
+  character picker out of General into Widget, and the TTS voice into Audio, so each
+  pane holds what its label promises.
+-->
+<style id="theme-tokens"></style>
+<link rel="stylesheet" href="app.css" />
+</head>
+<body>
+<div class="native-body">
+
+  <nav class="native-nav">
+    <div class="nav-item active" data-pane="general">General</div>
+    <div class="nav-item" data-pane="collections">Collections</div>
+    <div class="nav-item" data-pane="widget">Widget</div>
+    <div class="nav-item" data-pane="audio">Audio</div>
+    <div class="nav-item" data-pane="about">About</div>
+  </nav>
+
+  <main class="native-content">
+
+    <!-- ========================= GENERAL ========================= -->
+    <section id="pane-general">
+      <h3>Master file</h3>
+      <p class="sub">Excel workbook where all collected words are stored.</p>
+      <div id="general-banner" class="banner hidden"></div>
+      <div class="path-field">
+        <input class="text-input" id="master-path" readonly />
+        <button class="btn btn-ghost" id="browse-button">Browse&hellip;</button>
+      </div>
+
+      <h3 style="margin-top:18px;">Startup</h3>
+      <div class="settings-row">
+        <div>
+          <div class="label">Start with Windows</div>
+          <div class="desc">Launch Vocabulary Trainer when you sign in</div>
+        </div>
+        <div class="control">
+          <label class="switch">
+            <input type="checkbox" id="startup-toggle" /><span class="track"></span>
+          </label>
+        </div>
+      </div>
+
+      <h3 style="margin-top:18px;">Dictionary</h3>
+      <div class="settings-row">
+        <div>
+          <div class="label">Merriam-Webster API key</div>
+          <div class="desc">Optional. Adds a second dictionary source to lookups.</div>
+        </div>
+        <div class="control" style="display:flex; gap:8px;">
+          <input class="text-input" id="mw-key" type="password"
+                 placeholder="Paste key" style="width:150px;" />
+          <button class="btn btn-ghost" id="mw-save">Save</button>
+        </div>
+      </div>
+
+      <h3 style="margin-top:18px;">Local AI model</h3>
+      <p class="sub">
+        Generate English meanings with a model running on this computer, using
+        <b>Ollama</b>. Nothing is sent over the internet. Ollama is not installed
+        by this app &mdash; see the README to set it up.
+      </p>
+      <div id="ollama-banner" class="banner hidden"></div>
+      <div class="settings-row">
+        <div>
+          <div class="label">Use a local AI model</div>
+          <div class="desc" id="ollama-desc">Checking for Ollama&hellip;</div>
+        </div>
+        <div class="control">
+          <label class="switch">
+            <input type="checkbox" id="ollama-toggle" /><span class="track"></span>
+          </label>
+        </div>
+      </div>
+      <div class="settings-row">
+        <div>
+          <div class="label">Model</div>
+          <div class="desc">Only models already installed in Ollama are listed</div>
+        </div>
+        <div class="control" style="display:flex; gap:8px;">
+          <select class="select-input" id="ollama-model" style="width:170px;"></select>
+          <button class="btn btn-ghost" id="ollama-refresh">Refresh</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================= COLLECTIONS ======================= -->
+    <section id="pane-collections" class="hidden">
+      <h3>Collections</h3>
+      <p class="sub">Manage the collections used to group words in the master file.</p>
+      <div id="collections-banner" class="banner hidden"></div>
+      <div id="collections-list"></div>
+      <button class="btn btn-outline" id="new-collection" style="margin-top:8px;">
+        + New collection
+      </button>
+    </section>
+
+    <!-- ========================== WIDGET ========================= -->
+    <section id="pane-widget" class="hidden">
+      <h3>Floating widget</h3>
+      <p class="sub">Always-on-top mini-ani that lives on your desktop.</p>
+      <div id="widget-banner" class="banner hidden"></div>
+      <div class="settings-row">
+        <div>
+          <div class="label">Show widget</div>
+          <div class="desc">Turn the floating widget on or off entirely</div>
+        </div>
+        <div class="control">
+          <label class="switch">
+            <input type="checkbox" id="widget-toggle" /><span class="track"></span>
+          </label>
+        </div>
+      </div>
+      <div class="settings-row">
+        <div>
+          <div class="label">Character</div>
+          <div class="desc">Choose the mini-ani animation</div>
+        </div>
+        <div class="control">
+          <select class="select-input" id="character-select" style="width:140px;"></select>
+        </div>
+      </div>
+      <div class="settings-row">
+        <div>
+          <div class="label">Widget size</div>
+          <div class="desc">
+            Scale the floating widget. Applies straight away.
+          </div>
+        </div>
+        <div class="control scale-control">
+          <!-- min/max are set from the bridge on load, not hardcoded here, so the
+               range can only ever be the one the service actually accepts. -->
+          <input
+            type="range"
+            id="widget-scale"
+            class="range-input"
+            step="5"
+            aria-label="Widget size, percent of normal"
+          />
+          <button type="button" class="btn btn-ghost" id="widget-scale-reset">
+            Reset
+          </button>
+          <span class="scale-value" id="widget-scale-value">100%</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================== AUDIO ========================== -->
+    <section id="pane-audio" class="hidden">
+      <h3>Text-to-speech</h3>
+      <p class="sub">Used to read words aloud on correct answers during practice.</p>
+      <div id="audio-banner" class="banner hidden"></div>
+      <div class="settings-row">
+        <div>
+          <div class="label">Voice</div>
+          <div class="desc">Installed Windows speech voices</div>
+        </div>
+        <div class="control" style="display:flex; gap:8px;">
+          <select class="select-input" id="voice-select" style="width:180px;"></select>
+          <button class="btn btn-ghost" id="voice-preview">Preview</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================== ABOUT ========================== -->
+    <section id="pane-about" class="hidden">
+      <h3>About</h3>
+      <p class="sub">Version and data location.</p>
+      <div class="settings-row">
+        <div><div class="label">Application</div></div>
+        <div class="control"><span id="about-name"></span></div>
+      </div>
+      <div class="settings-row">
+        <div><div class="label">Version</div></div>
+        <div class="control"><span id="about-version"></span></div>
+      </div>
+      <div class="settings-row">
+        <div><div class="label">Master file</div></div>
+        <div class="control">
+          <span id="about-path" style="font-size:12px; color:var(--ink-soft);"></span>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- Delete confirmation, stating the exact word count that will be destroyed -->
+<div id="confirm-backdrop" class="modal-backdrop hidden">
+  <div class="modal-card">
+    <div class="title" id="confirm-title"></div>
+    <div class="body" id="confirm-body"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="confirm-cancel">Cancel</button>
+      <button class="btn btn-danger" id="confirm-delete"></button>
+    </div>
+  </div>
+</div>
+
+<!-- Collection preview: every word in one collection, in tabular form (FR-7.14) -->
+<div id="preview-backdrop" class="modal-backdrop hidden">
+  <div class="modal-card modal-card-wide">
+    <div class="title" id="preview-title"></div>
+    <div id="preview-banner" class="banner hidden"></div>
+    <div class="preview-table-wrap">
+      <table class="preview-table">
+        <thead>
+          <tr>
+            <th>Word</th>
+            <th>Type</th>
+            <th>Meaning</th>
+            <th>Example</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody id="preview-table-body"></tbody>
+      </table>
+      <div id="preview-empty" class="empty-note hidden">This collection has no words yet.</div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="preview-close">Close</button>
+    </div>
+  </div>
+</div>
+
+<script src="qwebchannel.js"></script>
+<script src="bridge-client.js"></script>
+<script src="settings.js"></script>
+</body>
+</html>

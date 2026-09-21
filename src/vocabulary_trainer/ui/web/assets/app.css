@@ -1,0 +1,406 @@
+/* ==========================================================================
+   Styles for the web-rendered windows (Practice, Settings).
+
+   Derived from mockup/styles.css. The design tokens themselves are NOT declared
+   here -- they are injected at load time from vocabulary_trainer.ui.theme.tokens
+   so this file and the Qt stylesheet provably share one source (NFR-UI-01).
+
+   The mockups wrap each screen in fake window chrome (.native-window,
+   .native-titlebar) for presentation on a web page. Here the real window supplies
+   the chrome, so those wrappers are dropped and their inner layout is applied to
+   the document body instead.
+   ========================================================================== */
+
+@font-face {
+  font-family: "Google Sans";
+  font-style: normal;
+  font-weight: 400;
+  src: url("fonts/GoogleSans-Regular.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Google Sans";
+  font-style: normal;
+  font-weight: 500;
+  src: url("fonts/GoogleSans-Medium.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Google Sans";
+  font-style: normal;
+  font-weight: 700;
+  src: url("fonts/GoogleSans-Bold.ttf") format("truetype");
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  font-family: var(--font);
+  color: var(--ink);
+  background: var(--surface);
+  font-size: 14px;
+}
+
+button { font-family: inherit; cursor: pointer; }
+input, select { font-family: inherit; }
+
+/* Hidden state used throughout, in place of inline style toggling. */
+.hidden { display: none !important; }
+
+/* --------------------------------------------------------------------------
+   Buttons -- .btn and friends from the mockups
+   -------------------------------------------------------------------------- */
+
+.btn {
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 9px 14px;
+  font-size: 13px;
+  font-weight: 600;
+}
+.btn:disabled { opacity: 0.55; cursor: not-allowed; }
+.btn-primary { background: var(--brand); color: #fff; }
+.btn-primary:hover:not(:disabled) { background: var(--brand-dark); }
+.btn-ghost { background: var(--surface-soft); color: var(--ink-soft); }
+.btn-danger { background: var(--danger); color: #fff; }
+.btn-outline {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--ink);
+}
+.btn-outline:hover { border-color: var(--brand); color: var(--brand); }
+
+.text-input, .select-input {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  font-size: 13.5px;
+  background: var(--surface-soft);
+  color: var(--ink);
+}
+.text-input:focus, .select-input:focus {
+  outline: none;
+  border-color: var(--brand);
+}
+
+/* --------------------------------------------------------------------------
+   Practice -- header and setup screen
+   -------------------------------------------------------------------------- */
+
+.pw-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--border);
+}
+.pw-header .brand {
+  display: flex; align-items: center; gap: 10px;
+  font-weight: 700; font-size: 15px;
+}
+.pw-header .brand .logo {
+  width: 26px; height: 26px; border-radius: 8px;
+  background: linear-gradient(135deg, var(--brand), #7c93ff);
+}
+.pw-body { padding: 22px 24px; }
+.pw-body h3 { margin: 0 0 4px; font-size: 15px; }
+.pw-body .sub { margin: 0 0 12px; font-size: 12.5px; color: var(--ink-soft); }
+
+.search-row { display: flex; gap: 8px; margin-bottom: 10px; }
+.search-wrap { flex: 1; position: relative; }
+.search-wrap .glyph {
+  position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+  color: var(--ink-faint); font-size: 13px;
+}
+.search-wrap .text-input { padding-left: 32px; }
+
+.collection-list {
+  display: flex; flex-direction: column; gap: 8px;
+  margin: 14px 0 20px;
+  max-height: 280px; overflow-y: auto;
+}
+.collection-item {
+  display: flex; align-items: center; justify-content: space-between;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  font-size: 13.5px;
+}
+.collection-item.selected { border-color: var(--brand); background: var(--brand-soft); }
+.collection-item label {
+  display: flex; align-items: center; gap: 10px; flex: 1; cursor: pointer;
+}
+.collection-item input { width: 16px; height: 16px; accent-color: var(--brand); }
+.collection-item .count { color: var(--ink-faint); font-size: 12px; }
+
+/* Preview action on a Practice setup row (FR-5.10) */
+.collection-item .preview-button {
+  border: none; background: none; cursor: pointer;
+  color: var(--ink-faint); font-size: 14px;
+  padding: 4px 6px; margin-left: 10px;
+  border-radius: 6px; flex-shrink: 0;
+}
+.collection-item .preview-button:hover { color: var(--brand); background: var(--surface); }
+
+.empty-note { font-size: 12.5px; color: var(--ink-faint); padding: 10px 0; }
+
+.setup-row {
+  display: flex; align-items: center; justify-content: space-between;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px; margin-bottom: 12px;
+}
+.setup-row .label { font-size: 13.5px; font-weight: 600; }
+.setup-row .desc { font-size: 12px; color: var(--ink-soft); margin-top: 2px; }
+
+.stepper { display: flex; align-items: center; gap: 10px; }
+.stepper button {
+  width: 26px; height: 26px; border-radius: 50%;
+  border: 1px solid var(--border); background: var(--surface-soft);
+  font-size: 14px; color: var(--ink);
+}
+.stepper button:disabled { opacity: 0.4; cursor: not-allowed; }
+.stepper .val { font-weight: 700; font-size: 14px; min-width: 20px; text-align: center; }
+
+/* Widget size slider (Settings -> Widget). A range input rather than the stepper
+   used for practice writes: the useful values here are a continuous span, and
+   dragging to a size while watching the widget resize is the point. */
+.scale-control { display: flex; align-items: center; gap: 10px; }
+.scale-control .scale-value {
+  font-weight: 700; font-size: 13px; color: var(--ink);
+  /* Fixed width so the row does not jump as the number goes 50% -> 100% -> 300%. */
+  min-width: 42px; text-align: right;
+}
+.range-input {
+  -webkit-appearance: none; appearance: none;
+  width: 160px; height: 4px; padding: 0;
+  border-radius: 999px; background: var(--border);
+  cursor: pointer;
+}
+.range-input::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: var(--brand); border: 2px solid var(--surface);
+  box-shadow: 0 1px 3px rgba(31, 36, 48, 0.3);
+}
+.range-input:focus-visible { outline: 2px solid var(--brand); outline-offset: 4px; }
+
+.pool-line { font-size: 12.5px; color: var(--ink-soft); margin-bottom: 14px; }
+.pool-line b { color: var(--ink); }
+.blocked-note { font-size: 12.5px; color: var(--danger); margin-bottom: 14px; }
+
+/* --------------------------------------------------------------------------
+   Practice -- drill screen
+   -------------------------------------------------------------------------- */
+
+.drill-topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 24px; border-bottom: 1px solid var(--border);
+}
+.drill-topbar .counter { font-size: 12.5px; color: var(--ink-soft); }
+.score-pill { display: flex; align-items: center; gap: 14px; font-size: 13px; }
+.score-pill .metric { display: flex; align-items: center; gap: 6px; color: var(--ink-soft); }
+.score-pill .metric b { color: var(--ink); font-size: 15px; }
+.score-pill .metric.penalty b { color: var(--danger); }
+
+.progress-track {
+  height: 6px; background: var(--surface-soft); border-radius: 999px;
+  margin: 0 24px; overflow: hidden;
+}
+.progress-fill {
+  height: 100%; background: var(--brand); border-radius: 999px;
+  transition: width 0.25s ease;
+}
+
+.drill-stage { padding: 40px 24px 30px; text-align: center; }
+.drill-stage .type-badge {
+  display: inline-block;
+  font-size: 11.5px; color: var(--brand); background: var(--brand-soft);
+  padding: 4px 12px; border-radius: 999px; margin-bottom: 14px;
+  font-weight: 600;
+}
+.drill-stage .meaning { font-size: 22px; font-weight: 600; margin-bottom: 8px; }
+.drill-stage .meaning.missing { color: var(--ink-faint); font-style: italic; font-size: 17px; }
+.drill-stage .hint { font-size: 13px; color: var(--ink-faint); margin-bottom: 26px; }
+
+.answer-input {
+  width: 320px; max-width: 100%;
+  text-align: center; font-size: 20px; padding: 12px 16px;
+  border-radius: var(--radius-md);
+  border: 2px solid var(--brand);
+  color: var(--ink);
+  margin-bottom: 16px;
+}
+.answer-input:focus { outline: none; }
+.answer-input.correct { border-color: var(--success); background: var(--success-soft); }
+.answer-input.wrong { border-color: var(--danger); background: var(--danger-soft); }
+
+.feedback {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 13.5px; font-weight: 600;
+  padding: 8px 16px; border-radius: 999px; margin-bottom: 10px;
+}
+.feedback.correct { background: var(--success-soft); color: var(--success); }
+.feedback.wrong { background: var(--danger-soft); color: var(--danger); }
+
+.mastery-row { display: flex; justify-content: center; gap: 6px; margin-top: 6px; }
+.mastery-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--border); }
+.mastery-dot.filled { background: var(--success); }
+.mastery-note { font-size: 11.5px; color: var(--ink-faint); margin-top: 6px; }
+
+.drill-actions { display: flex; justify-content: center; gap: 10px; margin-top: 18px; }
+
+/* --------------------------------------------------------------------------
+   Practice -- summary screen
+   -------------------------------------------------------------------------- */
+
+.summary-hero { text-align: center; padding: 28px 24px 10px; }
+.summary-hero .big-score { font-size: 42px; font-weight: 800; color: var(--brand); }
+.summary-hero .label { font-size: 13px; color: var(--ink-soft); }
+.summary-stats {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 12px; padding: 18px 24px 24px;
+}
+.summary-stat {
+  background: var(--surface-soft); border-radius: var(--radius-sm);
+  padding: 14px; text-align: center;
+}
+.summary-stat .num { font-size: 20px; font-weight: 700; }
+.summary-stat .lbl { font-size: 11.5px; color: var(--ink-soft); margin-top: 2px; }
+.summary-actions { display: flex; gap: 10px; padding: 0 24px 24px; }
+.summary-actions .btn { flex: 1; }
+
+/* --------------------------------------------------------------------------
+   Settings -- two-pane layout
+   -------------------------------------------------------------------------- */
+
+.native-body { display: flex; height: 100%; }
+.native-nav {
+  width: 150px; flex-shrink: 0;
+  background: var(--surface-soft);
+  border-right: 1px solid var(--border);
+  padding: 12px 8px;
+}
+.native-nav .nav-item {
+  padding: 9px 10px; border-radius: var(--radius-sm);
+  font-size: 12.5px; color: var(--ink-soft);
+  margin-bottom: 2px; cursor: pointer;
+}
+.native-nav .nav-item:hover { background: var(--border); }
+.native-nav .nav-item.active {
+  background: var(--brand-soft); color: var(--brand); font-weight: 600;
+}
+.native-content { flex: 1; padding: 18px 20px; overflow-y: auto; }
+.native-content h3 { font-size: 14px; margin: 0 0 4px; }
+.native-content .sub { font-size: 12px; color: var(--ink-soft); margin: 0 0 16px; }
+
+.settings-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 0; border-bottom: 1px solid var(--border); gap: 16px;
+}
+.settings-row:last-child { border-bottom: none; }
+.settings-row .label { font-size: 13px; font-weight: 600; }
+.settings-row .desc { font-size: 11.5px; color: var(--ink-soft); margin-top: 2px; }
+.settings-row .control { flex-shrink: 0; }
+.settings-row .control .select-input { width: 180px; }
+
+.path-field { display: flex; gap: 8px; margin-bottom: 16px; }
+.path-field .text-input { flex: 1; color: var(--ink-soft); }
+
+/* Toggle switch, matching the mockups' .switch */
+.switch { position: relative; width: 38px; height: 22px; display: inline-block; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.switch .track {
+  position: absolute; inset: 0; background: var(--border);
+  border-radius: 999px; transition: 0.2s; cursor: pointer;
+}
+.switch .track::after {
+  content: ""; position: absolute; width: 18px; height: 18px;
+  left: 2px; top: 2px; background: #fff; border-radius: 50%;
+  transition: 0.2s; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+}
+.switch input:checked + .track { background: var(--brand); }
+.switch input:checked + .track::after { left: 18px; }
+
+.collection-manage-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 12px; border: 1px solid var(--border);
+  border-radius: var(--radius-sm); margin-bottom: 8px; font-size: 13px;
+  gap: 12px;
+}
+.collection-manage-row .meta { color: var(--ink-faint); font-size: 11.5px; }
+.collection-manage-row .actions { display: flex; gap: 6px; flex-shrink: 0; }
+.collection-manage-row .actions button {
+  border: none; background: none; color: var(--ink-faint); font-size: 13px;
+  padding: 4px 6px; border-radius: 6px;
+}
+.collection-manage-row .actions button:hover { color: var(--brand); background: var(--surface-soft); }
+.collection-manage-row .rename-input { flex: 1; }
+
+/* Modal confirmation, matching the delete overlay in the mockup */
+.modal-backdrop {
+  position: fixed; inset: 0; background: rgba(20, 26, 46, 0.35);
+  display: flex; align-items: center; justify-content: center; z-index: 50;
+}
+.modal-card {
+  background: var(--surface); border-radius: var(--radius-md);
+  padding: 20px; width: 320px; box-shadow: var(--shadow-widget);
+}
+.modal-card .title { font-weight: 700; font-size: 14px; margin-bottom: 8px; }
+.modal-card .body {
+  font-size: 12.5px; color: var(--ink-soft);
+  margin-bottom: 16px; line-height: 1.5;
+}
+.modal-card .body b { color: var(--ink); }
+.modal-actions { display: flex; gap: 8px; }
+.modal-actions .btn { flex: 1; }
+
+/* Collection preview: a wider modal so a five-column table has room (FR-7.14) */
+.modal-card-wide { width: 560px; max-width: calc(100vw - 48px); }
+
+.preview-table-wrap { max-height: 360px; overflow-y: auto; margin-bottom: 16px; }
+.preview-table {
+  width: 100%; border-collapse: collapse; font-size: 12.5px;
+}
+.preview-table th {
+  text-align: left; font-size: 11px; letter-spacing: 0.02em;
+  text-transform: uppercase; color: var(--ink-faint);
+  padding: 6px 8px; border-bottom: 1px solid var(--border);
+  position: sticky; top: 0; background: var(--surface);
+}
+.preview-table td {
+  padding: 7px 8px; border-bottom: 1px solid var(--border);
+  color: var(--ink); vertical-align: top;
+}
+.preview-table tr:last-child td { border-bottom: none; }
+.preview-table .preview-blank { color: var(--ink-faint); }
+
+/* A blank cell whose lookup is still running, as opposed to one that finished with
+   nothing. Brand-coloured rather than faint, because this state is temporary and
+   worth noticing -- the em dash is meant to recede, this is not. */
+.preview-table .preview-pending {
+  display: inline-flex; align-items: center; gap: 6px;
+  color: var(--brand); font-size: 12px; white-space: nowrap;
+}
+.preview-table .spinner {
+  width: 10px; height: 10px; flex: none;
+  border: 1.5px solid var(--border);
+  border-top-color: var(--brand);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Respect a reduced-motion preference: the text alone still conveys the state, so
+   the animation is decoration rather than information. */
+@media (prefers-reduced-motion: reduce) {
+  .preview-table .spinner { animation: none; }
+}
+
+/* Inline feedback banners */
+.banner {
+  font-size: 12.5px; padding: 9px 12px;
+  border-radius: var(--radius-sm); margin-bottom: 12px; line-height: 1.5;
+}
+.banner.error { background: var(--danger-soft); color: var(--danger); }
+.banner.success { background: var(--success-soft); color: var(--success); }
+.banner.warning { background: var(--warning-soft); color: #8a6414; }
