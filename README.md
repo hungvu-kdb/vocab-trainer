@@ -32,6 +32,14 @@ python install_tool\build_exe.py
 
 That produces `install_tool\Install-VocabularyTrainer.exe`, which installs
 per-user with no admin rights and needs nothing else on the target machine.
+Running it over an existing install replaces the app itself but never touches
+`%AppData%\VocabularyTrainer` — your workbook, collections and preferences are
+kept exactly as they were.
+
+The repository also tracks a release workflow ("wrap up" — see
+`.kiro/steering/wrap-up.md`) that diffs the last-published installer against
+`change_log.md`, lets you pick which changes ship, and drops the built `.exe`
+plus a plain-language release note in `send_out/` ready to hand off.
 
 For development, install the package in place. `python -m vocabulary_trainer`
 fails with `No module named vocabulary_trainer` until you do, because the code
@@ -79,6 +87,9 @@ On first launch the app creates its workbook at
 `%AppData%\VocabularyTrainer\master.xlsx`, seeds a `General` collection, and places the
 character near the bottom-right of your screen. Click it for the menu; drag it anywhere.
 
+The character's size is adjustable: **Settings → Widget** has a slider from 50% to
+300% of its normal size, applied live as you drag it.
+
 ## Test
 
 ```cmd
@@ -91,7 +102,7 @@ With coverage:
 python -m pytest --cov=vocabulary_trainer --cov-report=term-missing
 ```
 
-**757 tests, 89% line coverage.** The `ui/` package is excluded from coverage: those
+**784 tests, 89% line coverage.** The `ui/` package is excluded from coverage: those
 modules need live Windows compositing and installed speech voices, so they are verified
 manually. Business logic is deliberately kept out of them, which is what makes the rest
 exercisable without a display.
@@ -180,6 +191,33 @@ Under `%AppData%\VocabularyTrainer\`:
 
 Practice results are kept here rather than in the master workbook, so the workbook
 stays a clean word list.
+
+## Practice scoring
+
+The drill tests recall: it shows a word's type and meaning, you type the word.
+Getting it right or wrong changes two things — your **score**, and how many more
+correct answers that specific word still needs before it's done for the session.
+
+- **A correct answer** counts toward the word's target and toward your score.
+- **A wrong answer** costs a point *and* adds one more required correct answer to
+  that word's target — permanently, until a correct answer pays it back down. The
+  spelling is revealed so you can see it, and the drill waits for you to continue
+  before moving on.
+
+For example: the default target is 3 correct answers to master a word. Get it wrong
+once, and it now takes 4 correct answers instead of 3 — not 3 in a row starting
+over, just 4 total, in any order. A second mistake makes it 5, and so on.
+
+**This has a ceiling.** A word's target can grow from mistakes, but never past 3×
+its starting requirement (so a default target of 3 can grow to at most 9). Past
+that point, more wrong answers still cost score but stop adding further
+repetitions. Without this, a word you were persistently getting wrong could — in
+principle — never leave the pool, since each miss and each correct answer would
+cancel out forever.
+
+Your score is correct answers minus penalties, shown live, and **not floored at
+zero** — a session with more mistakes than hits is genuinely negative, and the
+drill says so rather than hiding it.
 
 ## Dictionary lookup
 
