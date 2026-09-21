@@ -8,6 +8,103 @@ Newest first. One entry per change, timestamped when the change was made.
 
 ---
 
+# Date 2026-09-21 21:56
+
+**Release build v2.1.0, shipped to `send_out/` via the "wrap up" workflow.**
+
+First wrap-up run against the checklist process. Baseline was v2.0.0 (the original
+`.cmd` installer). User confirmed via `send_out/wrap-up-checklist.md`, then deleted
+per the wrap-up steering's cleanup step.
+
+Included:
+- Configurable widget size (50–300% slider)
+- Shortened/unclipped type-chip labels on the Collect card
+- Reworked penalty scoring (fixed this session, see the 21:28 entry above) — a wrong
+  answer now adds one extra required repetition, capped so a session cannot fail to
+  terminate
+- The `.exe` installer format itself (non-optional, ships regardless of selection)
+
+Excluded from this release (left in the source tree, not reverted, available for a
+future wrap-up):
+- Optional local AI meanings via Ollama, and its companion timeout fix
+- Multi-word ("Several") capture
+- Speech-bubble lookup confirmation ("I found it!" / "I couldn't find it")
+
+**One item shipped despite being listed as excludable, and that is worth stating
+plainly:** the checklist described "Looking up… instead of a blank dash" (the
+pending-lookup preview indicator) as separable from the Ollama feature. It is not,
+in the current code — `previewCell()` in both `settings.js` and `practice.js` renders
+that state for *any* pending lookup via `PendingEnrichmentRegistry`, which every
+save creates regardless of source, not only Ollama ones. Splitting it out would have
+meant writing a real revert (restoring the old two-state blank/dash rendering) rather
+than a no-op checkbox. Since dictionary-only lookups are typically sub-second, the
+"Looking up…" text is rarely seen in practice with Ollama excluded, so it shipped
+as-is rather than doing throwaway revert work for a state that's nearly invisible
+without the feature it was built alongside. Flagged here rather than silently
+included.
+
+- `pyproject.toml` — version `2.0.0` → `2.1.0`. Minor bump: one new user-visible
+  feature (widget size) plus a behavior change (scoring), not just a fix.
+- `install_tool/build_exe.py` rebuilt the wheel from `src/` fresh, generated the
+  icon, froze with PyInstaller, self-checked the binary. `20,420,754` bytes, valid
+  64-bit PE.
+- Confirmed before building: the installer never writes to
+  `%AppData%\VocabularyTrainer` (the workbook/collections) anywhere in
+  `installer_main.py` — only `%LocalAppData%\VocabularyTrainer` (the runtime venv)
+  is ever modified, so a reinstall over an existing copy preserves user data. Read
+  the full installer source to confirm this rather than assuming it still held.
+- `send_out/` replaced entirely: old `wrap-up-checklist.md` deleted,
+  `Install-VocabularyTrainer.exe` and a new plain-language `release-notes.md` copied
+  in.
+
+Verified: full suite green (784 tests) before building. Did not update
+`current_published_installation_package/` — per the wrap-up steering, that only
+happens once the user confirms they are actually distributing this build.
+
+---
+
+# Date 2026-09-21 21:28
+
+**Fixed the NOR (penalty/repetition) scoring rework so a session can no longer fail
+to terminate.**
+
+This closes the open question left from the previous NOR change: whether a word's
+required-repetition count could grow without bound from repeated mistakes. It could,
+and it did — `remaining_repetitions` had no ceiling, so a wrong answer added one to a
+word's target and a correct answer removed one, meaning strict wrong/right
+alternation held the target on a permanent plateau and never reached zero. A learner
+who was persistently 50/50 on one word could never finish the session.
+`test_a_session_with_misses_still_terminates` caught exactly this and was red on the
+tree before this fix.
+
+- `domain/scoring.py` — added `MAX_PENALTY_REPETITIONS_MULTIPLIER = 3` and a private
+  `_target` helper. A word's effective target can now be inflated by wrong answers
+  only up to `required_correct * 3`, never further. 3x was chosen so the cap is
+  never felt in ordinary play — a default `required_correct = 3` word would need 6+
+  wrong answers before the ceiling engages at all — while still being a small, fixed
+  bound that makes termination provable rather than merely likely.
+- `domain/models.py` — `PracticeWordState.remaining_for` docstring updated to note
+  the cap; behavior unchanged, it already delegated to `remaining_repetitions`.
+- `tests/domain/test_scoring.py` — added `TestRepetitionCap`: confirms the two
+  originally requested examples (NODR=3, one wrong → 4; one correct + two wrong → 4)
+  are untouched by the cap since they're far below it; confirms the target stops
+  growing past the ceiling even at 1000 wrong answers; pins a concrete strict
+  wrong/right alternation trace reaching mastery within a proven bound.
+- `tests/services/test_practice_service.py` — the previously-failing test now passes
+  and asserts it stayed under its guard rather than merely not hanging forever, so a
+  future regression that quietly raises the attempt count is still caught.
+
+**What did not change**: the core NOR rule itself — mistakes still cost one extra
+repetition on top of the score penalty, running totals not a consecutive streak,
+mastery still a one-way gate floored at zero. Only the missing ceiling was added.
+
+Verified: proved termination analytically for `required_correct` 1 through 10 under
+the exact adversarial alternation pattern before trusting the test suite, then
+confirmed the full suite — 784 passed, no regressions, no diagnostics on either
+changed file.
+
+---
+
 # Date 2026-09-17 20:59
 
 **The character now says "I found it!" or "I couldn't find it" in a small speech

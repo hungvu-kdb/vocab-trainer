@@ -116,6 +116,43 @@ class TestRemainingRepetitions:
         assert remaining_repetitions(3, correct_count=3, wrong_count=0) == 0
 
 
+class TestRepetitionCap:
+    """The ceiling that guarantees remaining_repetitions can't plateau forever."""
+
+    def test_uncapped_examples_from_the_original_request_are_unaffected(self) -> None:
+        """NODR=3 with 1 or 2 wrong answers stays far below the cap (required*3=9),
+        so both of the originally requested examples must be untouched by it."""
+        assert remaining_repetitions(3, correct_count=0, wrong_count=1) == 4
+        assert remaining_repetitions(3, correct_count=1, wrong_count=2) == 4
+
+    def test_target_stops_growing_past_the_ceiling(self) -> None:
+        """required=3 -> ceiling is 3*3=9. Once wrong_count alone would push the
+        target past 9, further wrong answers (with no correct answers yet) must
+        not raise remaining_repetitions any higher than 9."""
+        assert remaining_repetitions(3, correct_count=0, wrong_count=6) == 9
+        assert remaining_repetitions(3, correct_count=0, wrong_count=20) == 9
+        assert remaining_repetitions(3, correct_count=0, wrong_count=1000) == 9
+
+    def test_strict_alternation_always_reaches_zero(self) -> None:
+        """The exact adversarial pattern that made the uncapped rule hang: wrong,
+        right, wrong, right forever. Proven analytically to terminate; this test
+        pins a concrete required=3 trace to a finite attempt count."""
+        required = 3
+        correct = 0
+        wrong = 0
+        miss_next = True
+        for attempt in range(1, 100):
+            if miss_next:
+                wrong += 1
+            else:
+                correct += 1
+            miss_next = not miss_next
+            if is_mastered(required, correct, wrong):
+                assert attempt <= 20, "took far longer than the proven bound"
+                return
+        raise AssertionError("never reached mastery within 100 attempts")
+
+
 class TestIsMastered:
     def test_not_yet(self) -> None:
         assert is_mastered(3, correct_count=2, wrong_count=0) is False

@@ -21,3 +21,4 @@ Thumbs.db
 
 # Large generated installer binary (rebuild via install_tool/build_exe.py)
 install_tool/Install-VocabularyTrainer.exe
+send_out/Install-VocabularyTrainer.exe

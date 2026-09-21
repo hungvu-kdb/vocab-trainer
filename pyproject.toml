@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "vocab-v2"
-version = "2.0.0"
+version = "2.1.0"
 description = "Windows desktop vocabulary trainer: floating-widget capture plus native writing drill, backed by an Excel master file."
 requires-python = ">=3.12"
 

@@ -51,10 +51,19 @@ without that flag. Confirm test suite status (`python -m pytest`) as part of
 this step, not just changelog text, since the log can describe something as
 done while the tree currently disagrees.
 
-Tell the user the file is there, ask them to check the boxes (`- [ ]` →
-`- [x]`) and confirm when done. Then **read the file back** to see which boxes
-are checked — do not rely on memory of what you wrote, the user may have
-edited it.
+**Default every shippable item to checked (`- [x]`)** when writing the file —
+the user's workflow is to remove/uncheck what they *don't* want, not to
+opt in item by item. Only an item that is flagged broken/has-an-open-question
+stays without a checkbox (it gets the fix-now/revert/exclude-in-progress
+decision line instead, as before) — once such an item is resolved (fixed,
+reverted, or explicitly excluded) it either gains a checked box like
+everything else (if fixed/shippable) or is dropped from the list entirely (if
+reverted/excluded for this release).
+
+Tell the user the file is there, ask them to uncheck anything they don't want
+and confirm when done. Then **read the file back** to see which boxes are
+checked — do not rely on memory of what you wrote, the user may have edited
+it.
 
 This file is scratch/working state, not a deliverable: **delete it** once
 Step 4 has finished and the user has confirmed the release (same moment

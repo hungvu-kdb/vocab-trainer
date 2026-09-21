@@ -889,9 +889,22 @@ class TestFullSessionRun:
     def test_a_session_with_misses_still_terminates(
         self, service: PracticeService, repository: MasterFileRepository
     ) -> None:
+        """Guards the exact failure mode the NOR rule's repetition cap exists for:
+        under the uncapped rule, strict wrong/right alternation holds
+        ``remaining_repetitions`` on a plateau forever (a wrong answer adds one to
+        the target, a correct answer removes one, net zero), so a learner who is
+        persistently 50/50 on a word could never finish the session. The cap in
+        ``domain.scoring.MAX_PENALTY_REPETITIONS_MULTIPLIER`` bounds how far
+        mistakes can inflate the target, which is what makes this guaranteed to
+        terminate rather than merely likely to."""
         seed(repository, "IELTS", [f"word{i}" for i in range(5)])
         session = service.start_session(["IELTS"], 2)
 
+        # Generous but finite: proven analytically to terminate within
+        # required * MAX_PENALTY_REPETITIONS_MULTIPLIER * 2 attempts per word in
+        # the worst case (strict alternation), so 5 words comfortably finish well
+        # under this guard. A real hang would still be caught, not hidden by an
+        # overly large guard.
         guard = 0
         miss_next = True
         while not session.is_finished and guard < 500:
@@ -908,3 +921,4 @@ class TestFullSessionRun:
         assert session.is_finished is True
         assert session.words_mastered == 5
         assert session.penalties > 0
+        assert guard < 500, "hit the guard -- the termination guarantee regressed"

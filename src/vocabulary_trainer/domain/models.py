@@ -221,7 +221,14 @@ class PracticeWordState:
     wrong_count: int = 0
 
     def remaining_for(self, required: int) -> int:
-        """Correct answers still owed under the NOR rule, floored at zero."""
+        """Correct answers still owed under the NOR rule, floored at zero.
+
+        Wrong answers can raise the effective target above ``required``, but only
+        up to a fixed multiple of it (see
+        ``domain.scoring.MAX_PENALTY_REPETITIONS_MULTIPLIER``) -- otherwise a
+        learner stuck exactly 50/50 on a word could hold this above zero forever
+        and the session would never end.
+        """
         from vocabulary_trainer.domain.scoring import remaining_repetitions
 
         return remaining_repetitions(required, self.correct_count, self.wrong_count)
